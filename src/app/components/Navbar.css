@@ -1,0 +1,154 @@
+.main-nav {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.navbar-link {
+  margin-right: 1.5rem;
+  text-decoration: none;
+  color: #333;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 0.98rem;
+}
+
+.navbar-link:hover {
+  text-decoration: underline;
+}
+
+.navbar-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-btn:hover {
+  background: #1565c0;
+  color: #e3f2fd;
+}
+
+input[type="email"], input[type="password"], input[type="text"] {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #1976d2;
+  border-radius: 4px;
+  outline: none;
+  margin-top: 0.2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,32,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.login-modal {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(25, 118, 210, 0.15);
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  min-width: 320px;
+  max-width: 90vw;
+}
+
+.login-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #1976d2;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.login-field {
+  margin-bottom: 1rem;
+}
+
+.login-field label {
+  display: block;
+  font-size: 0.97rem;
+  color: #1a237e;
+  margin-bottom: 0.2rem;
+}
+
+.login-error {
+  color: #d32f2f;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 0.98rem;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.zoom-display {
+  font-weight: bold;
+  color: #1a237e;
+  min-width: 50px;
+  text-align: center;
+}
+
+.zoom-btn {
+  padding: 0.2rem 0.8rem;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .main-nav {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .nav-links {
+    order: 3;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .navbar-link {
+    margin-right: 0;
+  }
+
+  .nav-auth {
+    order: 2;
+    align-self: auto;
+  }
+
+  .zoom-controls {
+    order: 1;
+    justify-content: center;
+  }
+
+  .login-modal {
+    width: 90vw;
+    padding: 1.5rem;
+  }
+} 
