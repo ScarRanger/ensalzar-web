@@ -1,35 +1,46 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import { songs } from '../songData';
+import { useRouter } from 'next/navigation';
+import LoadingOverlay from '../components/LoadingOverlay';
 import './songCategory.css';
 
-const categories = [
-    'Entrance',
-    'Praise',
-    'Holy spirit',
-    'Thanksgiving',
-    'Midpraise',
-    'Surrender',
-    'Healing',
-    'Worship',
-    'Christmas',
-];
+const SongCategoryPage = () => {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState([]);
 
-const SongCategoryPage = () => (
-    <div className="song-category-root">
-        <Navbar />
-        <h1>Song Categories</h1>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '2rem' }}>
-            {categories.map((cat) => (
-                <button
-                    key={cat}
-                    className="category-btn"
-                >
-                    {cat}
-                </button>
-            ))}
+    useEffect(() => {
+        // Simulate loading for demonstration; replace with real async if needed
+        setTimeout(() => {
+            setCategories(Array.from(new Set(songs.map(song => song.category))));
+            setLoading(false);
+        }, 300);
+    }, []);
+
+    const handleCategoryClick = (cat) => {
+        router.push(`/songList?category=${encodeURIComponent(cat)}`);
+    };
+
+    return (
+        <div className="song-category-root">
+            <Navbar />
+            {loading && <LoadingOverlay />}
+            <h1>Song Categories</h1>
+            <div className="category-list">
+                {categories.map((cat) => (
+                    <button
+                        key={cat}
+                        className="category-btn"
+                        onClick={() => handleCategoryClick(cat)}
+                    >
+                        {cat}
+                    </button>
+                ))}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default SongCategoryPage;
