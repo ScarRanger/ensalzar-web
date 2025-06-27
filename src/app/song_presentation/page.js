@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../components/supabaseClient';
-import { songs } from '../songData';
+import { fetchSongData } from '../songData';
 
 function parseSlides(html) {
   if (!html) return [];
@@ -13,6 +12,7 @@ function parseSlides(html) {
 }
 
 export default function SongPresentationPage() {
+  const [songs, setSongs] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
   const [slides, setSlides] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -21,7 +21,10 @@ export default function SongPresentationPage() {
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState('');
 
-  // Fetch song HTML from Supabase when a song is selected
+  useEffect(() => {
+    fetchSongData().then(data => setSongs(data.songs));
+  }, []);
+
   useEffect(() => {
     if (!selectedSong) return;
     setLoading(true);
@@ -30,18 +33,15 @@ export default function SongPresentationPage() {
     setCurrentSlide(0);
 
     async function fetchSongHtml() {
-      const { data, error } = await supabase
-        .storage
-        .from('songs-html-files')
-        .download(selectedSong.fileName);
-
-      if (error) {
-        setFetchError('Could not fetch song: ' + error.message);
-        setLoading(false);
-        return;
+      try {
+        const url = `https://cgs-songs-config.s3.ap-south-1.amazonaws.com/${selectedSong.src}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Could not fetch song');
+        const text = await res.text();
+        setSlides(parseSlides(text));
+      } catch (err) {
+        setFetchError('Could not fetch song: ' + err.message);
       }
-      const text = await data.text();
-      setSlides(parseSlides(text));
       setLoading(false);
     }
 

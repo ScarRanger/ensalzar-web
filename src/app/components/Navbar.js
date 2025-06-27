@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import './Navbar.css';
 import { supabase } from './supabaseClient';
 import { useZoom } from './ZoomContext';
+import { fetchSongData } from '../songData';
 
 const navItems = [
   // { name: 'Home', path: '/' },
@@ -29,6 +30,10 @@ const Navbar = () => {
   const [registerMode, setRegisterMode] = useState(false);
   const pathname = usePathname();
   const zoomContext = useZoom();
+  const [search, setSearch] = useState('');
+  const [allSongs, setAllSongs] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const isSongDetailPage = pathname.startsWith('/songList/') && pathname.length > '/songList'.length + 1;
 
@@ -57,10 +62,29 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    fetchSongData().then(data => setAllSongs(data.songs || []));
+  }, []);
+
+  useEffect(() => {
+    if (!search.trim()) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+    const q = search.trim().toLowerCase();
+    const results = allSongs.filter(song =>
+      (song.title && song.title.toLowerCase().includes(q)) ||
+      (Array.isArray(song.tags) && song.tags.some(tag => tag.toLowerCase().includes(q))) ||
+      (song.category && song.category.toLowerCase().includes(q))
+    );
+    setSearchResults(results);
+    setShowDropdown(true);
+  }, [search, allSongs]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    setRegisterMode(false);
     const trimmedEmail = email.trim();
     if (!emailRegex.test(trimmedEmail)) {
       setError('Please enter a valid email address.');
@@ -68,12 +92,7 @@ const Navbar = () => {
     }
     const { error } = await supabase.auth.signInWithPassword({ email: trimmedEmail, password });
     if (error) {
-      if (error.message.includes('Invalid login credentials')) {
-        setRegisterMode(true);
-        setError('No account found. Would you like to register?');
-      } else {
-        setError(error.message);
-      }
+      setError(error.message);
     } else {
       setShowLogin(false);
       setEmail('');
@@ -125,6 +144,12 @@ const Navbar = () => {
     await supabase.auth.signOut();
   };
 
+  const handleResultClick = (song) => {
+    setSearch('');
+    setShowDropdown(false);
+    window.location.href = `/songList/${encodeURIComponent(song.fileName || song.src)}`;
+  };
+
   return (
     <nav className="main-nav">
       <div className="nav-links">
@@ -134,6 +159,35 @@ const Navbar = () => {
           </Link>
         ))}
       </div>
+
+      <form className="navbar-search" onSubmit={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', marginRight: '1rem', position: 'relative' }}>
+        <input
+          type="text"
+          placeholder="Search songs..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="navbar-search-input"
+          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginRight: '0.5rem', minWidth: 200 }}
+          onFocus={() => { if (searchResults.length > 0) setShowDropdown(true); }}
+          onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+        />
+        <button type="submit" className="navbar-btn" style={{ padding: '0.5rem 1rem' }}>Search</button>
+        {showDropdown && searchResults.length > 0 && (
+          <div className="navbar-search-dropdown" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: '#fff', border: '1px solid #ccc', borderRadius: 4, zIndex: 100, maxHeight: 300, overflowY: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+            {searchResults.map(song => (
+              <div
+                key={song.fileName || song.src}
+                className="navbar-search-result"
+                style={{ padding: '0.5rem 1rem', cursor: 'pointer', borderBottom: '1px solid #eee' }}
+                onMouseDown={() => handleResultClick(song)}
+              >
+                <div style={{ fontWeight: 500 }}>{song.title || song.name}</div>
+                <div style={{ fontSize: '0.9em', color: '#1976d2' }}>{(song.tags && song.tags.join(', ')) || song.category}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </form>
 
       {isSongDetailPage && (
         <div className="zoom-controls">
@@ -192,7 +246,22 @@ const Navbar = () => {
                       </div>
                     )}
                     {error && <div className="login-error">{error}</div>}
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1rem' }}>
+                    <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setRegisterMode(!registerMode);
+                          setError('');
+                        }}
+                        style={{ color: '#007bff', cursor: 'pointer', textDecoration: 'none' }}
+                      >
+                        {registerMode
+                          ? 'Already have an account? Login'
+                          : "Don't have an account? Register"}
+                      </a>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
                       <button type="button" className="navbar-btn" onClick={() => setShowLogin(false)}>Cancel</button>
                       <button type="submit" className="navbar-btn">{registerMode ? 'Register' : 'Login'}</button>
                     </div>

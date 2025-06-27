@@ -120,6 +120,13 @@
   background-color: #45a049;
 }
 
+.done-btn.active {
+  background-color: #388e3c;
+  color: #fff;
+  box-shadow: 0 0 8px #388e3c44;
+  transform: scale(1.05);
+}
+
 .save-btn {
   background-color: #2196F3;
   color: white;
@@ -129,6 +136,13 @@
   background-color: #1e87db;
 }
 
+.save-btn.active {
+  background-color: #1565c0;
+  color: #fff;
+  box-shadow: 0 0 8px #1565c044;
+  transform: scale(1.05);
+}
+
 .remove-btn {
   background-color: #f44336;
   color: white;
@@ -136,6 +150,42 @@
 
 .remove-btn:hover {
   background-color: #da190b;
+}
+
+.language-tabs.full-width {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto 2rem auto;
+  background: #f5f7fa;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+  z-index: 1;
+  padding: 0.5rem 0;
+  border-radius: 0 0 12px 12px;
+}
+
+.language-tab {
+  flex: 1 1 0;
+  max-width: 220px;
+  min-width: 100px;
+  background: #e3eafc;
+  color: #1976d2;
+  border: none;
+  border-radius: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 0;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(25, 118, 210, 0.06);
+}
+
+.language-tab.active {
+  background: #1976d2;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.12);
 }
 
 @media (max-width: 768px) {
@@ -167,5 +217,20 @@
   .song-list-placeholder {
     height: auto;
     min-height: 50vh;
+  }
+
+  .language-tabs.full-width {
+    flex-direction: column;
+    width: 100%;
+    margin: 0 0 1rem 0;
+    padding: 0.2rem 0;
+  }
+
+  .language-tab {
+    width: 100%;
+    max-width: none;
+    margin: 0.2rem 0;
+    font-size: 1rem;
+    padding: 0.7rem 0;
   }
 } 
