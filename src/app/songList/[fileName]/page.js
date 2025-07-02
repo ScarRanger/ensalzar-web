@@ -101,10 +101,17 @@ export default function SongDetailPage({ params }) {
       {loading && <LoadingOverlay />}
       {error && <div style={{ color: 'red' }}>{error}</div>}
       <div
-        className={`html-content-container song-html-content ${chordToggleClass}`}
-        style={{ zoom: zoomLevel }}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+        style={{ overflow: 'auto', width: '100%', height: '100%', position: 'relative' }}
+      >
+        <div className="zoomable-content">
+          <div
+            className={`html-content-container song-html-content ${chordToggleClass}`}
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        </div>
+      </div>
+
+
       {/* Add zoom controls as a fixed overlay at the bottom only on mobile */}
       {isMobile && (
         <div className="zoom-controls-overlay">

@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useState, useContext, useMemo } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const ZoomContext = createContext(null);
 
@@ -9,14 +9,12 @@ export const ZoomProvider = ({ children }) => {
   const zoomIn = () => setZoomLevel(prev => Math.min(prev + 0.1, 3));
   const zoomOut = () => setZoomLevel(prev => Math.max(prev - 0.1, 0.5));
 
-  const value = useMemo(() => ({
-    zoomLevel,
-    zoomIn,
-    zoomOut,
-  }), [zoomLevel]);
+  useEffect(() => {
+    document.documentElement.style.setProperty('--zoom-scale', zoomLevel);
+  }, [zoomLevel]);
 
   return (
-    <ZoomContext.Provider value={value}>
+    <ZoomContext.Provider value={{ zoomLevel, zoomIn, zoomOut }}>
       {children}
     </ZoomContext.Provider>
   );
@@ -24,8 +22,6 @@ export const ZoomProvider = ({ children }) => {
 
 export const useZoom = () => {
   const context = useContext(ZoomContext);
-  if (context === null) {
-    throw new Error('useZoom must be used within a ZoomProvider');
-  }
+  if (!context) throw new Error('useZoom must be used within a ZoomProvider');
   return context;
-}; 
+};

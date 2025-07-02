@@ -76,6 +76,9 @@
   transition: 0.3s;
   border-radius: 34px;
 }
+
+
+
 .slider:before {
   position: absolute;
   content: "";
@@ -165,4 +168,24 @@
   .toggle-switch {
     vertical-align: middle;
   }
+}
+
+.song-html-content {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 1rem;
+}
+
+.chord {
+  font-weight: bold;
+  color: #1976d2;
+  font-size: 1rem;
+}
+
+.zoomable-content {
+  will-change: transform;
+  -webkit-transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  width: 100vw;
+  overflow-x: auto;
 }

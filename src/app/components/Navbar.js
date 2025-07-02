@@ -13,7 +13,7 @@ const navItems = [
   { name: 'Saved Songs', path: '/savedSongs' }, 
   { name: 'Song List', path: '/songList' },
   { name: 'Song Category', path: '/songCategory' },
-  { name: 'Presentation', path: '/song_presentation' },
+  // { name: 'Presentation', path: '/song_presentation' },
 
 ];
 
