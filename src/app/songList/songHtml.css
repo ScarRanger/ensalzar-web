@@ -131,3 +131,38 @@
     min-height: 44px;
   }
 }
+
+.zoom-controls-overlay {
+  position: fixed;
+  left: 50%;
+  bottom: 2.5rem;
+  transform: translateX(-50%);
+  z-index: 1200;
+  background: rgba(255,255,255,0.95);
+  border-radius: 2rem;
+  box-shadow: 0 2px 12px rgba(25, 118, 210, 0.10);
+  padding: 0.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .zoom-controls-overlay {
+    min-width: 80vw;
+    max-width: 95vw;
+    padding: 0.5rem 0.5rem;
+    bottom: 1.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+  }
+  .show-chords-label {
+    margin-top: 0.2em;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .toggle-switch {
+    vertical-align: middle;
+  }
+}

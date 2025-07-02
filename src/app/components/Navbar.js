@@ -13,7 +13,7 @@ const navItems = [
   { name: 'Saved Songs', path: '/savedSongs' }, 
   { name: 'Song List', path: '/songList' },
   { name: 'Song Category', path: '/songCategory' },
-  // { name: 'Presentation', path: '/song_presentation' },
+  { name: 'Presentation', path: '/song_presentation' },
 
 ];
 
@@ -34,6 +34,7 @@ const Navbar = () => {
   const [allSongs, setAllSongs] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const isSongDetailPage = pathname.startsWith('/songList/') && pathname.length > '/songList'.length + 1;
 
@@ -63,7 +64,10 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    fetchSongData().then(data => setAllSongs(data.songs || []));
+    fetch('https://cgs-songs-config.s3.ap-south-1.amazonaws.com/songsData.json')
+      .then(res => res.json())
+      .then(data => setAllSongs(data.songs || []))
+      .catch(err => setAllSongs([]));
   }, []);
 
   useEffect(() => {
@@ -74,13 +78,19 @@ const Navbar = () => {
     }
     const q = search.trim().toLowerCase();
     const results = allSongs.filter(song =>
-      (song.title && song.title.toLowerCase().includes(q)) ||
-      (Array.isArray(song.tags) && song.tags.some(tag => tag.toLowerCase().includes(q))) ||
-      (song.category && song.category.toLowerCase().includes(q))
+      (song.name && song.name.toLowerCase().includes(q)) ||
+      (song.tags && song.tags.split(',').some(tag => tag.toLowerCase().includes(q)))
     );
     setSearchResults(results);
     setShowDropdown(true);
   }, [search, allSongs]);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -182,14 +192,14 @@ const Navbar = () => {
                 onMouseDown={() => handleResultClick(song)}
               >
                 <div style={{ fontWeight: 500 }}>{song.title || song.name}</div>
-                <div style={{ fontSize: '0.9em', color: '#1976d2' }}>{(song.tags && song.tags.join(', ')) || song.category}</div>
+                <div style={{ fontSize: '0.9em', color: '#1976d2' }}>{song.tags || ''}</div>
               </div>
             ))}
           </div>
         )}
       </form>
 
-      {isSongDetailPage && (
+      {isSongDetailPage && !isMobile && (
         <div className="zoom-controls">
           <button onClick={zoomContext.zoomOut} className="navbar-btn zoom-btn">-</button>
           <span className="zoom-display">{Math.round(zoomContext.zoomLevel * 100)}%</span>
@@ -197,7 +207,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <div className="nav-auth">
+      <div className="nav-auth" style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
         {user ? (
           <>
             <span style={{ marginRight: '1rem' }}>
@@ -272,6 +282,15 @@ const Navbar = () => {
           </>
         )}
       </div>
+      {isSongDetailPage && (
+        <button
+          className="navbar-btn done-btn"
+          style={{ marginLeft: 'auto' }}
+          onClick={() => window.location.href = '/songList'}
+        >
+          Done
+        </button>
+      )}
     </nav>
   );
 };

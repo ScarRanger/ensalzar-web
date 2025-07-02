@@ -102,6 +102,15 @@ input[type="email"], input[type="password"], input[type="text"] {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  position: fixed;
+  left: 50%;
+  bottom: 2.5rem;
+  transform: translateX(-50%);
+  z-index: 1200;
+  background: rgba(255,255,255,0.95);
+  border-radius: 2rem;
+  box-shadow: 0 2px 12px rgba(25, 118, 210, 0.10);
+  padding: 0.5rem 1.5rem;
 }
 
 .zoom-display {
@@ -114,6 +123,23 @@ input[type="email"], input[type="password"], input[type="text"] {
 .zoom-btn {
   padding: 0.2rem 0.8rem;
   font-size: 1.2rem;
+}
+
+.done-btn {
+  background: #43a047 !important;
+  color: #fff !important;
+  font-size: 1.15em;
+  font-weight: 800;
+  padding: 0.7em 2em;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(67, 160, 71, 0.18);
+  letter-spacing: 0.04em;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.done-btn:hover {
+  background: #388e3c !important;
+  color: #e8f5e9 !important;
+  box-shadow: 0 4px 16px rgba(67, 160, 71, 0.28);
 }
 
 @media (max-width: 768px) {
@@ -143,8 +169,10 @@ input[type="email"], input[type="password"], input[type="text"] {
   }
 
   .zoom-controls {
-    order: 1;
-    justify-content: center;
+    min-width: 80vw;
+    max-width: 95vw;
+    padding: 0.5rem 0.5rem;
+    bottom: 1.2rem;
   }
 
   .login-modal {

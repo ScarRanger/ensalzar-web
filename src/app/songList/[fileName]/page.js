@@ -15,6 +15,7 @@ export default function SongDetailPage({ params }) {
   const { zoomLevel, zoomIn, zoomOut } = useZoom();
   const { fileName } = React.use(params);
   const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if (!fileName) return;
@@ -65,6 +66,13 @@ export default function SongDetailPage({ params }) {
   // Toggle chord visibility by adding/removing a class
   const chordToggleClass = showChords ? '' : 'hide-chords';
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div>
       <div
@@ -72,25 +80,22 @@ export default function SongDetailPage({ params }) {
       >
         <button onClick={() => router.back()} style={{ fontSize: '1.1em', padding: '0.5em 1.2em', borderRadius: 6, border: 'none', background: '#e3eafc', color: '#1976d2', fontWeight: 700, cursor: 'pointer', marginRight: '1.5rem' }}>← Back</button>
         <div className="song-control-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <button onClick={zoomOut} style={{ fontSize: '1.3em', padding: '0.2em 0.7em', borderRadius: 6, border: 'none', background: '#1976d2', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>-</button>
-          <span style={{ minWidth: 40, textAlign: 'center', fontWeight: 600, color: '#1976d2' }}>Zoom: {Math.round(zoomLevel * 100)}%</span>
-          <button onClick={zoomIn} style={{ fontSize: '1.3em', padding: '0.2em 0.7em', borderRadius: 6, border: 'none', background: '#1976d2', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>+</button>
-        </div>
-        <div className="song-control-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button onClick={() => setTranspose(t => t - 1)} style={{ fontSize: '1.3em', padding: '0.2em 0.7em', borderRadius: 6, border: 'none', background: '#1976d2', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>-</button>
           <span style={{ minWidth: 40, textAlign: 'center', fontWeight: 600, color: '#1976d2' }}>Transpose: {transpose}</span>
           <button onClick={() => setTranspose(t => t + 1)} style={{ fontSize: '1.3em', padding: '0.2em 0.7em', borderRadius: 6, border: 'none', background: '#1976d2', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>+</button>
         </div>
         <div className="song-control-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <label className="toggle-switch">
-            <input
-              type="checkbox"
-              checked={showChords}
-              onChange={() => setShowChords(v => !v)}
-            />
-            <span className="slider" />
-          </label>
-          <span style={{ fontWeight: 500, marginLeft: '0.5em' }}>Show Chords</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <label className="toggle-switch" aria-label="Show Chords">
+              <input
+                type="checkbox"
+                checked={showChords}
+                onChange={() => setShowChords(v => !v)}
+              />
+              <span className="slider" />
+            </label>
+            <span className="show-chords-label" style={{ fontWeight: 500, marginLeft: '0.5em' }}>Show Chords</span>
+          </div>
         </div>
       </div>
       {loading && <LoadingOverlay />}
@@ -100,6 +105,14 @@ export default function SongDetailPage({ params }) {
         style={{ zoom: zoomLevel }}
         dangerouslySetInnerHTML={{ __html: html }}
       />
+      {/* Add zoom controls as a fixed overlay at the bottom only on mobile */}
+      {isMobile && (
+        <div className="zoom-controls-overlay">
+          <button onClick={zoomOut} style={{ fontSize: '1.3em', padding: '0.2em 0.7em', borderRadius: 6, border: 'none', background: '#1976d2', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>-</button>
+          <span style={{ minWidth: 40, textAlign: 'center', fontWeight: 600, color: '#1976d2' }}>Zoom: {Math.round(zoomLevel * 100)}%</span>
+          <button onClick={zoomIn} style={{ fontSize: '1.3em', padding: '0.2em 0.7em', borderRadius: 6, border: 'none', background: '#1976d2', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>+</button>
+        </div>
+      )}
     </div>
   );
 } 

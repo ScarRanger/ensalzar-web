@@ -24,3 +24,11 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.zoomable-content {
+  will-change: transform;
+  -webkit-transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  width: 100vw;
+  overflow-x: auto;
+}
