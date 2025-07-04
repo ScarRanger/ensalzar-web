@@ -88,12 +88,14 @@ function SongListContent({ language, setLanguage }) {
         setLoading(true);
         const song_filename = song.fileName || song.src;
         const song_title = song.title || song.name;
-        const { error } = await supabase.from('daily_songs').insert({
+        const username = user.user_metadata?.username || user.email;
+        const { error } = await supabase.from('daily_songs').upsert({
             user_id: user.id,
             date: today,
             song_filename,
             song_title,
-        });
+            username,
+        }, { onConflict: ['user_id', 'date', 'song_filename'] });
         if (error) console.error('Error saving to daily:', error);
         else setDailySongs(prev => ({ ...prev, [song_filename]: true }));
         setLoading(false);
@@ -121,10 +123,12 @@ function SongListContent({ language, setLanguage }) {
         setLoading(true);
         const song_filename = song.fileName || song.src;
         const song_title = song.title || song.name;
+        const username = user.user_metadata?.username || user.email;
         const { error } = await supabase.from('saved_songs').upsert({
             user_id: user.id,
             song_filename,
             song_title,
+            username,
         });
         if (error) console.error('Error saving song:', error);
         else setSavedSongs(prev => ({ ...prev, [song_filename]: true }));

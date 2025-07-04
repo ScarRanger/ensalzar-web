@@ -1,3 +1,4 @@
+/* ===== General Song Content ===== */
 .song-html-content pre {
   color: #111;
   text-align: left;
@@ -25,7 +26,7 @@
 .song-html-content .chord {
   display: inline-block;
   background: #e3f2fd;
-  color: #1976d2;
+  color: #ff0303;
   border-radius: 6px;
   padding: 0.1em 0.5em;
   margin: 0 0.2em;
@@ -43,7 +44,7 @@
   border-top: 1px solid #bbdefb;
 }
 
-.song-html-content body, 
+.song-html-content body,
 .song-html-content html {
   background: none !important;
   color: inherit !important;
@@ -53,18 +54,47 @@
   display: none !important;
 }
 
-/* Toggle Switch Styles */
+/* ===== Buttons ===== */
+.song-button {
+  font-size: 1em;
+  padding: 0.4em 1em;
+  border-radius: 6px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.song-button.back {
+  background: #e3eafc;
+  color: #1976d2;
+}
+
+.song-button.done {
+  background: #4caf50;
+  color: white;
+}
+
+.song-button.primary {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* ===== Toggle Switch Styles ===== */
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 48px;
-  height: 28px;
+  width: 42px;
+  height: 24px;
 }
+
 .toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
+
 .slider {
   position: absolute;
   cursor: pointer;
@@ -77,13 +107,11 @@
   border-radius: 34px;
 }
 
-
-
 .slider:before {
   position: absolute;
   content: "";
-  height: 20px;
-  width: 20px;
+  height: 16px;
+  width: 16px;
   left: 4px;
   bottom: 4px;
   background-color: white;
@@ -91,60 +119,74 @@
   border-radius: 50%;
   box-shadow: 0 1px 4px rgba(25, 118, 210, 0.12);
 }
+
 .toggle-switch input:checked + .slider {
   background-color: #1976d2;
 }
+
 .toggle-switch input:checked + .slider:before {
-  transform: translateX(20px);
+  transform: translateX(18px);
 }
 
+/* ===== Controls Bar ===== */
 .song-controls-bar {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin: 1.5rem 2rem 0 2rem;
-  justify-content: flex-start;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
+
 .song-control-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
+/* ===== Mobile Styles ===== */
 @media (max-width: 700px) {
   .song-controls-bar {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.7rem;
-    margin: 1rem 0.5rem 0 0.5rem;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    gap: 0.6rem;
+    margin: 1rem 0.8rem 0 0.8rem;
   }
-  .song-control-group {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
+
+  .song-button {
+    font-size: 0.95em;
+    padding: 0.4em 0.8em;
+    min-width: 36px;
+    min-height: 36px;
   }
-  .song-controls-bar button,
-  .song-controls-bar label {
-    font-size: 1.1em !important;
-    padding: 1em 0.5em !important;
-    min-width: 44px;
-    min-height: 44px;
+
+  .show-chords-label {
+    font-size: 0.9em;
+    margin-left: 0.4em;
+  }
+
+  .toggle-switch {
+    width: 36px;
+    height: 20px;
+  }
+
+  .toggle-switch .slider:before {
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
   }
 }
 
+/* ===== Zoom Controls Overlay ===== */
 .zoom-controls-overlay {
   position: fixed;
   left: 50%;
-  bottom: 2.5rem;
+  bottom: 2rem;
   transform: translateX(-50%);
   z-index: 1200;
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 2rem;
   box-shadow: 0 2px 12px rgba(25, 118, 210, 0.10);
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1.2rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -152,40 +194,26 @@
 
 @media (max-width: 768px) {
   .zoom-controls-overlay {
-    min-width: 80vw;
+    min-width: 75vw;
     max-width: 95vw;
-    padding: 0.5rem 0.5rem;
-    bottom: 1.2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    justify-content: center;
-  }
-  .show-chords-label {
-    margin-top: 0.2em;
-    display: inline-block;
-    vertical-align: middle;
-  }
-  .toggle-switch {
-    vertical-align: middle;
+    padding: 0.5rem 0.7rem;
+    bottom: 1rem;
   }
 }
 
-.song-html-content {
-  font-size: 1rem;
-  line-height: 1.5rem;
-  padding: 1rem;
-}
-
-.chord {
-  font-weight: bold;
-  color: #1976d2;
-  font-size: 1rem;
-}
-
+/* ===== Zoomable Content ===== */
 .zoomable-content {
+  font-size: calc(16px * var(--zoom-scale));
   will-change: transform;
   -webkit-transform: translateZ(0);
   -webkit-font-smoothing: antialiased;
-  width: 100vw;
   overflow-x: auto;
+}
+
+.zoomable-content > *:not(.no-zoom) {
+  font-size: inherit;
+}
+
+.no-zoom {
+  font-size: 1rem !important;
 }

@@ -5,6 +5,9 @@ import LoadingOverlay from '../../components/LoadingOverlay';
 import '../songList.css';
 import '../songHtml.css';
 import { useRouter } from 'next/navigation';
+import { fetchSongData } from '../../songData';
+import { useUser } from '../../components/useUser';
+import { supabase } from '../../components/supabaseClient';
 
 export default function SongDetailPage({ params }) {
   const [html, setHtml] = useState('');
@@ -16,6 +19,9 @@ export default function SongDetailPage({ params }) {
   const { fileName } = React.use(params);
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
+  const { user } = useUser();
+  const [isDaily, setIsDaily] = useState(false);
+  const today = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
     if (!fileName) return;
@@ -36,6 +42,21 @@ export default function SongDetailPage({ params }) {
     };
     fetchHtml();
   }, [fileName]);
+
+  useEffect(() => {
+    if (!user || !fileName) return;
+    // Check if song is already in daily songs
+    supabase
+      .from('daily_songs')
+      .select('song_filename')
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .eq('song_filename', fileName)
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) setIsDaily(true);
+        else setIsDaily(false);
+      });
+  }, [user, fileName, today]);
 
   // Chord transpose logic
   useEffect(() => {
@@ -73,12 +94,54 @@ export default function SongDetailPage({ params }) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const handleSaveToDaily = async () => {
+    if (!user) return alert('Please log in.');
+    setLoading(true);
+    const songData = await fetchSongData();
+    const song = songData.songs.find(s => s.src === decodeURIComponent(fileName));
+    if (!song) {
+      setLoading(false);
+      return alert('Song not found.');
+    }
+    const song_filename = song.fileName || song.src;
+    const song_title = song.title || song.name;
+    const username = user.user_metadata?.username || user.email;
+    const { error } = await supabase.from('daily_songs').upsert({
+      user_id: user.id,
+      date: today,
+      song_filename,
+      song_title,
+      username,
+    }, { onConflict: ['user_id', 'date', 'song_filename'] });
+    if (error) alert('Error saving to daily: ' + error.message);
+    else setIsDaily(true);
+    setLoading(false);
+  };
+
+  const handleRemoveFromDaily = async () => {
+    if (!user) return;
+    setLoading(true);
+    const song_filename = fileName;
+    const { error } = await supabase.from('daily_songs').delete()
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .eq('song_filename', song_filename);
+    if (error) alert('Error removing from daily: ' + error.message);
+    else setIsDaily(false);
+    setLoading(false);
+  };
+
   return (
     <div>
       <div
-        className="song-controls-bar"
+        className="song-controls-bar no-zoom"
       >
         <button onClick={() => router.back()} style={{ fontSize: '1.1em', padding: '0.5em 1.2em', borderRadius: 6, border: 'none', background: '#e3eafc', color: '#1976d2', fontWeight: 700, cursor: 'pointer', marginRight: '1.5rem' }}>← Back</button>
+        {isDaily ? (
+          <button onClick={handleRemoveFromDaily} className="song-action-btn done-btn active" style={{ marginRight: '1.5rem' }}>Added!</button>
+        ) : (
+          <button onClick={handleSaveToDaily} className="song-action-btn done-btn" style={{ marginRight: '1.5rem' }}>Done</button>
+        )}
         <div className="song-control-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button onClick={() => setTranspose(t => t - 1)} style={{ fontSize: '1.3em', padding: '0.2em 0.7em', borderRadius: 6, border: 'none', background: '#1976d2', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>-</button>
           <span style={{ minWidth: 40, textAlign: 'center', fontWeight: 600, color: '#1976d2' }}>Transpose: {transpose}</span>

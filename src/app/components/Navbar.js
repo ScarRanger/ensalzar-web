@@ -35,6 +35,7 @@ const Navbar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const isSongDetailPage = pathname.startsWith('/songList/') && pathname.length > '/songList'.length + 1;
 
@@ -162,43 +163,120 @@ const Navbar = () => {
 
   return (
     <nav className="main-nav">
-      <div className="nav-links">
-        {navItems.map((item) => (
-          <Link key={item.name} href={item.path} legacyBehavior>
-            <a className="navbar-link">{item.name}</a>
-          </Link>
-        ))}
+      <div className="navbar-content">
+        <div className="nav-links">
+          {navItems.map((item) => (
+            <Link key={item.name} href={item.path} legacyBehavior>
+              <a className="navbar-link">{item.name}</a>
+            </Link>
+          ))}
+        </div>
+        <form className="navbar-search" onSubmit={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+          <input
+            type="text"
+            placeholder="Search songs..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="navbar-search-input"
+            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginRight: '0.5rem', minWidth: 200 }}
+            onFocus={() => { if (searchResults.length > 0) setShowDropdown(true); }}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+          />
+          {showDropdown && searchResults.length > 0 && (
+            <div className="navbar-search-dropdown" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: '#fff', border: '1px solid #ccc', borderRadius: 4, zIndex: 100, maxHeight: 300, overflowY: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+              {searchResults.map(song => (
+                <div
+                  key={song.fileName || song.src}
+                  className="navbar-search-result"
+                  style={{ padding: '0.5rem 1rem', cursor: 'pointer', borderBottom: '1px solid #eee' }}
+                  onMouseDown={() => handleResultClick(song)}
+                >
+                  <div style={{ fontWeight: 500 }}>{song.title || song.name}</div>
+                  <div style={{ fontSize: '0.9em', color: '#1976d2' }}>{song.tags || ''}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </form>
+        <div className="nav-auth" style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+          {user ? (
+            <>
+              <span className="user-initial">{(profile?.username || user.email || '').charAt(0).toUpperCase()}</span>
+              <button className="hamburger" onClick={() => setShowMenu(v => !v)}>☰</button>
+              {showMenu && (
+                <div className="hamburger-menu-dropdown">
+                  <button onClick={handleLogout} className="navbar-btn" style={{ width: '100%' }}>Logout</button>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <button onClick={() => { setShowLogin(!showLogin); setError(''); setRegisterMode(false); }} className="navbar-btn">Login</button>
+              {showLogin && (
+                <div className="login-modal-bg">
+                  <div className="login-modal">
+                    <form onSubmit={registerMode ? handleRegister : handleLogin}>
+                      <div className="login-title">{registerMode ? 'Register' : 'Login'}</div>
+                      <div className="login-field">
+                        <label>Email</label>
+                        <input
+                          type="email"
+                          placeholder="Email"
+                          value={email}
+                          onChange={e => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="login-field">
+                        <label>Password</label>
+                        <input
+                          type="password"
+                          placeholder="Password"
+                          value={password}
+                          onChange={e => setPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      {registerMode && (
+                        <div className="login-field">
+                          <label>Username</label>
+                          <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                            required
+                          />
+                        </div>
+                      )}
+                      {error && <div className="login-error">{error}</div>}
+                      <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setRegisterMode(!registerMode);
+                            setError('');
+                          }}
+                          style={{ color: '#007bff', cursor: 'pointer', textDecoration: 'none' }}
+                        >
+                          {registerMode
+                            ? 'Already have an account? Login'
+                            : "Don't have an account? Register"}
+                        </a>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                        <button type="button" className="navbar-btn" onClick={() => setShowLogin(false)}>Cancel</button>
+                        <button type="submit" className="navbar-btn">{registerMode ? 'Register' : 'Login'}</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
-
-      <form className="navbar-search" onSubmit={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', marginRight: '1rem', position: 'relative' }}>
-        <input
-          type="text"
-          placeholder="Search songs..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="navbar-search-input"
-          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginRight: '0.5rem', minWidth: 200 }}
-          onFocus={() => { if (searchResults.length > 0) setShowDropdown(true); }}
-          onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-        />
-        <button type="submit" className="navbar-btn" style={{ padding: '0.5rem 1rem' }}>Search</button>
-        {showDropdown && searchResults.length > 0 && (
-          <div className="navbar-search-dropdown" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: '#fff', border: '1px solid #ccc', borderRadius: 4, zIndex: 100, maxHeight: 300, overflowY: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            {searchResults.map(song => (
-              <div
-                key={song.fileName || song.src}
-                className="navbar-search-result"
-                style={{ padding: '0.5rem 1rem', cursor: 'pointer', borderBottom: '1px solid #eee' }}
-                onMouseDown={() => handleResultClick(song)}
-              >
-                <div style={{ fontWeight: 500 }}>{song.title || song.name}</div>
-                <div style={{ fontSize: '0.9em', color: '#1976d2' }}>{song.tags || ''}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </form>
-
       {isSongDetailPage && !isMobile && (
         <div className="zoom-controls">
           <button onClick={zoomContext.zoomOut} className="navbar-btn zoom-btn">-</button>
@@ -206,82 +284,6 @@ const Navbar = () => {
           <button onClick={zoomContext.zoomIn} className="navbar-btn zoom-btn">+</button>
         </div>
       )}
-
-      <div className="nav-auth" style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-        {user ? (
-          <>
-            <span style={{ marginRight: '1rem' }}>
-              {profile?.username ? profile.username : user.email}
-            </span>
-            <button onClick={handleLogout} className="navbar-btn">Logout</button>
-          </>
-        ) : (
-          <>
-            <button onClick={() => { setShowLogin(!showLogin); setError(''); setRegisterMode(false); }} className="navbar-btn">Login</button>
-            {showLogin && (
-              <div className="login-modal-bg">
-                <div className="login-modal">
-                  <form onSubmit={registerMode ? handleRegister : handleLogin}>
-                    <div className="login-title">{registerMode ? 'Register' : 'Login'}</div>
-                    <div className="login-field">
-                      <label>Email</label>
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="login-field">
-                      <label>Password</label>
-                      <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        required
-                      />
-                    </div>
-                    {registerMode && (
-                      <div className="login-field">
-                        <label>Username</label>
-                        <input
-                          type="text"
-                          placeholder="Username"
-                          value={username}
-                          onChange={e => setUsername(e.target.value)}
-                          required
-                        />
-                      </div>
-                    )}
-                    {error && <div className="login-error">{error}</div>}
-                    <div style={{ textAlign: 'center', margin: '1rem 0' }}>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setRegisterMode(!registerMode);
-                          setError('');
-                        }}
-                        style={{ color: '#007bff', cursor: 'pointer', textDecoration: 'none' }}
-                      >
-                        {registerMode
-                          ? 'Already have an account? Login'
-                          : "Don't have an account? Register"}
-                      </a>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                      <button type="button" className="navbar-btn" onClick={() => setShowLogin(false)}>Cancel</button>
-                      <button type="submit" className="navbar-btn">{registerMode ? 'Register' : 'Login'}</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
       {isSongDetailPage && (
         <button
           className="navbar-btn done-btn"
