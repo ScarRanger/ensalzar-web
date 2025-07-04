@@ -8,6 +8,7 @@ import { useUser } from '../components/useUser';
 import LoadingOverlay from '../components/LoadingOverlay';
 import './songList.css';
 import { supabase } from '../components/supabaseClient';
+import LanguageTabs from '../components/LanguageTabs';
 
 function SongListContent({ language, setLanguage }) {
     const searchParams = useSearchParams();
@@ -192,21 +193,41 @@ function SongListContent({ language, setLanguage }) {
 }
 
 export default function SongListPage() {
-    const [language, setLanguage] = React.useState('hindi');
+    const [language, setLanguage] = React.useState('marathi');
+    const [swiping, setSwiping] = React.useState(false);
+    const touchStartX = React.useRef(null);
+    const touchEndX = React.useRef(null);
+    const swipeTimeout = React.useRef(null);
+
+    const handleTouchStart = (e) => {
+        touchStartX.current = e.changedTouches[0].screenX;
+        setSwiping(true);
+        if (swipeTimeout.current) clearTimeout(swipeTimeout.current);
+    };
+    const handleTouchEnd = (e) => {
+        touchEndX.current = e.changedTouches[0].screenX;
+        const delta = touchEndX.current - touchStartX.current;
+        const languages = ['marathi', 'hindi', 'english'];
+        const idx = languages.indexOf(language);
+        if (Math.abs(delta) > 50) {
+            if (delta < 0 && idx < languages.length - 1) {
+                setLanguage(languages[idx + 1]);
+            } else if (delta > 0 && idx > 0) {
+                setLanguage(languages[idx - 1]);
+            }
+        }
+        swipeTimeout.current = setTimeout(() => setSwiping(false), 250);
+    };
+
     return (
-        <div>
+        <div
+            className={`swipeable-songlist${swiping ? ' swiping' : ''}`}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            style={{ touchAction: 'pan-y', transition: 'background 0.2s' }}
+        >
             <Navbar />
-            <div className="language-tabs full-width">
-                {['hindi', 'marathi', 'english'].map(lang => (
-                    <button
-                        key={lang}
-                        className={`language-tab${language === lang ? ' active' : ''}`}
-                        onClick={() => setLanguage(lang)}
-                    >
-                        {lang.charAt(0).toUpperCase() + lang.slice(1)}
-                    </button>
-                ))}
-            </div>
+            <LanguageTabs language={language} setLanguage={setLanguage} swiping={swiping} />
             <Suspense fallback={<LoadingOverlay />}>
                 <SongListContent language={language} setLanguage={setLanguage} />
             </Suspense>

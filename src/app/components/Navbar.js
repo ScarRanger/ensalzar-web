@@ -9,12 +9,11 @@ import { fetchSongData } from '../songData';
 
 const navItems = [
   // { name: 'Home', path: '/' },
-  { name: 'Daily Songs', path: '/songDaily' },
-  { name: 'Saved Songs', path: '/savedSongs' }, 
+  // { name: 'Daily Songs', path: '/songDaily' },
+  // { name: 'Saved Songs', path: '/savedSongs' },
   { name: 'Song List', path: '/songList' },
   { name: 'Song Category', path: '/songCategory' },
   // { name: 'Presentation', path: '/song_presentation' },
-
 ];
 
 const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -93,6 +92,19 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Close hamburger menu on outside click
+  useEffect(() => {
+    if (!showMenu) return;
+    const handleClick = (e) => {
+      if (!document.querySelector('.hamburger-menu-dropdown')?.contains(e.target) &&
+          !document.querySelector('.hamburger')?.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showMenu]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -164,6 +176,7 @@ const Navbar = () => {
   return (
     <nav className="main-nav">
       <div className="navbar-content">
+        <div className="navbar-brand">Ensalzar</div>
         <div className="nav-links">
           {navItems.map((item) => (
             <Link key={item.name} href={item.path} legacyBehavior>
@@ -171,24 +184,22 @@ const Navbar = () => {
             </Link>
           ))}
         </div>
-        <form className="navbar-search" onSubmit={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+        <form className="navbar-search">
           <input
             type="text"
             placeholder="Search songs..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="navbar-search-input"
-            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', marginRight: '0.5rem', minWidth: 200 }}
             onFocus={() => { if (searchResults.length > 0) setShowDropdown(true); }}
             onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
           />
           {showDropdown && searchResults.length > 0 && (
-            <div className="navbar-search-dropdown" style={{ position: 'absolute', top: '110%', left: 0, right: 0, background: '#fff', border: '1px solid #ccc', borderRadius: 4, zIndex: 100, maxHeight: 300, overflowY: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+            <div className="navbar-search-dropdown">
               {searchResults.map(song => (
                 <div
                   key={song.fileName || song.src}
                   className="navbar-search-result"
-                  style={{ padding: '0.5rem 1rem', cursor: 'pointer', borderBottom: '1px solid #eee' }}
                   onMouseDown={() => handleResultClick(song)}
                 >
                   <div style={{ fontWeight: 500 }}>{song.title || song.name}</div>
@@ -198,15 +209,20 @@ const Navbar = () => {
             </div>
           )}
         </form>
-        <div className="nav-auth" style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+        <div className="nav-auth">
           {user ? (
             <>
               <span className="user-initial">{(profile?.username || user.email || '').charAt(0).toUpperCase()}</span>
               <button className="hamburger" onClick={() => setShowMenu(v => !v)}>☰</button>
               {showMenu && (
-                <div className="hamburger-menu-dropdown">
-                  <button onClick={handleLogout} className="navbar-btn" style={{ width: '100%' }}>Logout</button>
-                </div>
+                <>
+                  <div className="hamburger-backdrop" />
+                  <div className="hamburger-menu-dropdown animated">
+                    <Link href="/songDaily" legacyBehavior><a className="hamburger-link" onClick={() => setShowMenu(false)}>Daily Songs</a></Link>
+                    <Link href="/savedSongs" legacyBehavior><a className="hamburger-link" onClick={() => setShowMenu(false)}>Saved Songs</a></Link>
+                    <button onClick={() => { setShowMenu(false); handleLogout(); }} className="navbar-btn" style={{ width: '100%' }}>Logout</button>
+                  </div>
+                </>
               )}
             </>
           ) : (

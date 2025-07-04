@@ -1,0 +1,95 @@
+.language-tabs-material {
+  display: flex;
+  position: relative;
+  border-bottom: 1.5px solid #e0e0e0;
+  background: #fff;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-end;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.language-tab-material {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 0 10px 0;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #757575;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.language-tab-material.active {
+  color: #111;
+  font-weight: 700;
+  transition: color 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.language-tab-material.swiping {
+  background: #f0f7ff;
+  transition: background 0.2s;
+}
+
+.language-tab-underline {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background: #1976d2;
+  border-radius: 2px 2px 0 0;
+  transition: left 0.3s cubic-bezier(.4,0,.2,1), width 0.3s cubic-bezier(.4,0,.2,1), background 0.2s;
+  will-change: left, width;
+  z-index: 2;
+}
+
+.language-tab-underline.swiping {
+  background: #1565c0;
+  transition: left 0.2s cubic-bezier(.4,0,.2,1), width 0.2s cubic-bezier(.4,0,.2,1), background 0.2s;
+}
+
+@media (max-width: 600px) {
+  .language-tabs-material {
+    font-size: 0.95rem;
+  }
+  .language-tab-material {
+    padding: 10px 0 8px 0;
+    font-size: 0.98rem;
+  }
+}
+
+.swipeable-songlist {
+  transition: background 0.2s;
+}
+.swipeable-songlist.swiping {
+  background: #f5faff;
+}
+
+.language-tabs-material.swiping {
+  background: #e3f2fd;
+  transition: background 0.2s;
+}
+.language-tab-underline.swiping {
+  background: #1565c0;
+  transition: left 0.2s cubic-bezier(.4,0,.2,1), width 0.2s cubic-bezier(.4,0,.2,1), background 0.2s;
+}
+.language-tab-material.swiping {
+  background: #f0f7ff;
+  transition: background 0.2s;
+}
+
+/* Optionally, add a slight slide effect to the underline and tabs */
+.language-tabs-material.swiping .language-tab-underline {
+  transform: translateX(2px);
+}
+.language-tabs-material.swiping .language-tab-material.active {
+  transform: translateX(2px);
+  transition: transform 0.2s;
+} 

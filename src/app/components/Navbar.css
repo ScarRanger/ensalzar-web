@@ -17,15 +17,23 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  gap: 1.5rem;
+  gap: 1.2rem;
+}
+
+.navbar-brand {
+  font-size: 1.35rem;
+  font-weight: bold;
+  color: #1976d2;
+  letter-spacing: 0.04em;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
 }
 
 .nav-links {
-  flex: 1 1 0;
   display: flex;
   align-items: center;
   gap: 1rem;
-  min-width: 180px;
+  flex-shrink: 0;
 }
 
 .navbar-link {
@@ -45,12 +53,12 @@
 
 /* Search Bar */
 .navbar-search {
-  flex: 2 1 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  min-width: 220px;
+  flex: 1 1 300px;
+  min-width: 180px;
 }
 
 .navbar-search-input {
@@ -107,11 +115,10 @@
 
 /* Auth Section */
 .nav-auth {
-  flex: 1 1 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-width: 120px;
+  flex-shrink: 0;
   position: relative;
 }
 
@@ -220,15 +227,19 @@
   .navbar-content {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.7rem;
+    gap: 0.5rem;
+  }
+  .navbar-brand {
+    margin: 0 0 0.5rem 0;
+    text-align: center;
   }
   .nav-links, .navbar-search, .nav-auth {
-    flex: unset;
+    justify-content: center;
     min-width: 0;
-    justify-content: center;
+    flex: unset;
   }
-  .nav-auth {
-    justify-content: center;
+  .nav-links {
+    margin-bottom: 0.2rem;
   }
 }
 
@@ -270,3 +281,44 @@
   flex-direction: column;
   align-items: stretch;
 }
+
+.hamburger-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.12);
+  z-index: 199;
+  animation: fadeIn 0.2s;
+}
+
+.hamburger-menu-dropdown.animated {
+  animation: slideDown 0.18s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hamburger-link {
+  display: block;
+  padding: 0.7em 1.2em;
+  color: #1976d2;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.18s, color 0.18s;
+  margin-bottom: 0.2em;
+}
+.hamburger-link:hover {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+/* Remove search icon and floating search bar styles */
+.search-icon-btn { display: none !important; }
+.navbar-search.navbar-search-float { display: none !important; }
+.nav-auth-horizontal { display: flex; }
