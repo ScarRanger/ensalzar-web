@@ -31,7 +31,8 @@ export default function SongDetailPage({ params }) {
       setHtml('');
       setError('');
       try {
-        const url = `https://cgs-songs-config.s3.ap-south-1.amazonaws.com/${decodeURIComponent(fileName)}`;
+        const baseUrl = process.env.NEXT_PUBLIC_SONG_S3_URL;
+        const url = `${baseUrl}${decodeURIComponent(fileName)}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Could not fetch file');
         const text = await res.text();
