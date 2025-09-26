@@ -1,0 +1,51 @@
+/* app/presentation/presentation.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    color: #1e293b;
+    overflow: hidden; /* Hide scrollbars */
+    -webkit-font-smoothing: antialiased;
+}
+
+.presentation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    padding: 2vw; /* Use viewport units for padding */
+    box-sizing: border-box;
+    font-family: 'Georgia', serif; /* A classic, readable serif font */
+}
+
+.slide-display {
+    text-align: center;
+    width: 100%;
+}
+
+.slide-display .placeholder {
+    font-size: 5vmin;
+    color: #94a3b8;
+}
+
+.slide-display p {
+    font-size: 6vmin;
+    line-height: 1.4;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    color: #1e293b;
+}
+
+.slide-display h2, .slide-display h3 {
+    font-size: 4vmin;
+    font-style: italic;
+    color: #475569;
+    margin-bottom: 2vmin;
+}
+
+/* Hide any chord spans that might have been missed */
+.slide-display .chord { display:none; }

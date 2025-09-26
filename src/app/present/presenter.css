@@ -1,0 +1,24 @@
+/* app/present/presenter.css */
+body { background-color: #f5f7fb; color: #222; }
+.presenter-container { display: flex; flex-direction: column; height: 100vh; font-family: sans-serif; }
+.presenter-header { padding: 1rem; background-color: #ffffff; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
+.presenter-header h1 { margin: 0; font-size: 1.5rem; }
+.presenter-btn { background-color: #3b82f6; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+.presenter-btn:hover { background-color: #2563eb; }
+.presenter-body { display: flex; flex: 1; overflow: hidden; }
+.song-selection-panel { width: 300px; border-right: 1px solid #e2e8f0; padding: 1rem; overflow-y: auto; background:#ffffff; }
+.song-selection-panel h3 { margin-top: 0; }
+.song-selection-panel ul { list-style: none; padding: 0; margin: 0; }
+.song-selection-panel button { width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; background: #f1f5f9; color: #222; border: 1px solid #d0d7e2; border-radius: 6px; text-align: left; cursor: pointer; transition: background .15s, border-color .15s; }
+.song-selection-panel button:hover { background:#e2e8f0; }
+.song-selection-panel button.active { background-color: #3b82f6; color:#fff; border-color: #3b82f6; font-weight: 600; }
+.slide-control-panel { flex: 1; padding: 2rem; display: flex; flex-direction: column; background: #f8fafc; }
+.slide-previews { display: flex; gap: 2rem; flex: 1; }
+.slide-preview { flex: 1; background: #ffffff; border-radius: 8px; padding: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+.slide-preview h4 { margin-top: 0; color: #64748b; font-weight: 600; }
+.slide-content { font-size: 1.1rem; line-height: 1.55; color:#1e293b; }
+.slide-navigation { display: flex; justify-content: center; align-items: center; gap: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
+.slide-navigation button { background-color: #f1f5f9; color: #222; padding: 0.75rem 2rem; border-radius: 6px; border: 1px solid #d0d7e2; cursor:pointer; }
+.slide-navigation button:hover:not(:disabled) { background:#e2e8f0; }
+.slide-navigation button:disabled { opacity: 0.45; cursor: not-allowed; }
+.no-song-selected { display: flex; justify-content: center; align-items: center; height: 100%; color: #94a3b8; }

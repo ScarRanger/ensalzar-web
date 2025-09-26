@@ -6,15 +6,3 @@ export async function fetchSongData() {
   return res.json();
 }
 
-export const songs = [
-  {
-    title: "Vasundharega",
-    category: "Entrance",
-    fileName: "vasundharega.html",
-  },
-  {
-    title: "Mala Gau De",
-    category: "Praise",
-    fileName: "mala-gau-de.html",
-   },
-];
